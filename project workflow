@@ -1,0 +1,47 @@
+1. Initial Setup
+
+Connect the flame sensor to the A0 pin and the MQ2 gas sensor to the A1 pin.
+
+Connect the LEDs to pins 5, 6, and 7 for flame, gas, and normal conditions respectively.
+
+Connect the buzzer to pin 2.
+
+Power the Arduino board.
+
+2. Sensor Calibration
+
+Read the values from the flame sensor and the MQ2 gas sensor using analogRead.
+
+Implement smoothing for more stable readings by taking multiple samples and averaging them.
+
+3. Logic to Check Conditions
+
+Check the value of the flame sensor:
+
+If the flame sensor value is below a threshold (e.g., 500), activate the flame detection process.
+
+Check the value of the gas sensor:
+
+If the gas sensor value is within a certain range (e.g., between 300 and 600), activate the gas detection process.
+
+4. LED and Buzzer Responses
+
+If a flame is detected, turn on the red LED and trigger a buzzer sound at 4kHz.
+
+If gas or smoke is detected, turn on the orange LED and trigger a buzzer sound at 3.5kHz.
+
+If no hazards are detected, turn on the green LED indicating normal condition.
+
+5. Continuous Monitoring
+
+The system continuously reads sensor data and checks the conditions in a loop.
+
+It responds in real-time based on the sensor readings, ensuring safety alerts are triggered promptly.
+
+6. Delays and Updates
+
+Introduce a short delay to prevent continuous sensor reading in rapid succession (e.g., 200 milliseconds).
+
+7. Final Output
+
+The system outputs sensor readings and the status (flame, gas, or normal) to the Serial Monitor for debugging and verification.
