@@ -1,0 +1,82 @@
+/*
+  ------------------------------------------------------------------------------
+  © 2025 Javier Siliacay | USTP - All Rights Reserved.
+
+  This source code is the intellectual property of the author and is provided 
+  for educational and non-commercial use only. Unauthorized copying, modification, 
+  distribution, or use of this code for commercial purposes is strictly prohibited 
+  without prior written consent from the author.
+
+  Violation of these terms may result in legal action under applicable intellectual 
+  property laws.
+
+  For permissions, contact: siliacay.javier@ustp.edu.ph
+  ------------------------------------------------------------------------------
+*/
+
+// Pin setup
+const int flameSensorPin = A0;   // Flame sensor analog pin
+const int gasSensorPin = A1;     // MQ2 sensor analog pin
+
+const int redLedPin = 5;         // Red LED (Flame)
+const int orangeLedPin = 6;      // Orange LED (Gas/Smoke)
+const int greenLedPin = 7;      // Green LED (Normal)
+
+const int buzzer = 2;
+
+void setup() {
+  pinMode(redLedPin, OUTPUT);
+  pinMode(orangeLedPin, OUTPUT);
+  pinMode(greenLedPin, OUTPUT);
+  pinMode(buzzer, OUTPUT);
+
+  Serial.begin(9600);
+}
+
+void loop() {
+  // Read sensors with smoothing
+  int flameSensorValue = smoothRead(flameSensorPin);
+  int gasSensorValue = smoothRead(gasSensorPin);
+
+  Serial.print("Flame: ");
+  Serial.print(flameSensorValue);
+  Serial.print(" | Gas: ");
+  Serial.println(gasSensorValue);
+
+  bool flameDetected = flameSensorValue < 500;  // Adjust threshold as needed
+  bool gasDetected = gasSensorValue > 300 && gasSensorValue <600;      // Adjust threshold as needed
+
+  if (flameDetected) {
+    Serial.println("🔥 Flame Detected!");
+    digitalWrite(redLedPin, HIGH);
+    digitalWrite(orangeLedPin, LOW);
+    digitalWrite(greenLedPin, LOW);
+    tone(buzzer, 4000, 1000); // 4kHz tone for flame alert
+  }
+  else if (gasDetected) {
+    Serial.println("⚠️ Gas/Smoke Detected!");
+    digitalWrite(redLedPin, LOW);
+    digitalWrite(orangeLedPin, HIGH);
+    digitalWrite(greenLedPin, LOW);
+    tone(buzzer, 3500, 500); // 3.5kHz tone for gas alert
+  }
+  else {
+    Serial.println("✅ Normal Condition");
+    digitalWrite(redLedPin, LOW);
+    digitalWrite(orangeLedPin, LOW);
+    noTone(greenLedPin);
+  }
+
+  delay(200); // Smooth update rate
+}
+
+// Function to smooth out sensor readings
+int smoothRead(int pin) {
+  long total = 0;
+  const int samples = 10;
+  for (int i = 0; i < samples; i++) {
+    total += analogRead(pin);
+    delay(5); // Small delay for stability
+  }
+  return total / samples;
+}
